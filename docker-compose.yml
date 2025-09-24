@@ -1,0 +1,31 @@
+version: "2"
+services:
+  framework-db:
+    image: postgres:14.7
+    command:
+      - docker-entrypoint.sh
+      - -c
+      - ssl=on
+      - -c
+      - ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+      - -c
+      - ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+    ports:
+      - "15432:5432" # SQL
+    environment:
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=framework
+  phppgadmin:
+    build:
+      dockerfile: Dockerfile.phppgadmin.m1
+    ports:
+      - 8888:8080
+    environment:
+      - DATABASE_HOST=framework-db
+      - DATABASE_PORT_NUMBER=5432
+      - DATABASE_SSL_MODE=disable
+      - DATABASE_ENABLE_EXTRA_LOGIN_SECURITY=no
+    depends_on:
+      - framework-db

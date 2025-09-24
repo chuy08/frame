@@ -1,0 +1,3 @@
+FROM bitnami/phppgadmin-archived
+
+RUN echo "Mutex posixsem" >> /opt/bitnami/apache2/conf/httpd.conf

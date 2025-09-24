@@ -1,0 +1,13 @@
+database:
+  host: localhost
+  port: 15432
+  user: postgres
+  password: postgres
+  name: framework
+  sslmode: require
+
+server:
+  port: 1323
+
+logging:
+  level: "debug" # or "info"
