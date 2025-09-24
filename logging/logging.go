@@ -29,6 +29,7 @@ func Initialize() error {
 	defaultConfig = zap.NewProductionConfig()
 	defaultConfig.OutputPaths = []string{"stdout"}
 	defaultConfig.ErrorOutputPaths = []string{"stderr"}
+	defaultConfig.Encoding = "json" // Explicitly set JSON encoder
 
 	// Get log level from config
 	logLevel := strings.ToLower(viper.GetString("logging.level"))
@@ -53,7 +54,9 @@ func updateLogger(level zapcore.Level) error {
 
 	// Sync the old logger if it exists
 	if old := logger.Load(); old != nil {
-		old.Sync()
+		if err := old.Sync(); err != nil {
+			fmt.Printf("Error syncing old logger: %v\n", err)
+		}
 	}
 
 	// Store the new logger

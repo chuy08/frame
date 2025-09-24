@@ -18,7 +18,11 @@ func Start() error {
 	if err := logging.Initialize(); err != nil {
 		return err
 	}
-	defer logging.Close()
+	defer func() {
+		if err := logging.Close(); err != nil {
+			fmt.Printf("Error closing logger: %v\n", err)
+		}
+	}()
 
 	// Initialize database connection
 	ctx := context.Background()

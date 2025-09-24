@@ -68,7 +68,11 @@ func WatchConfig() {
 		fmt.Printf("Error creating config logger: %v\n", err)
 		return
 	}
-	defer logger.Sync()
+	defer func() {
+		if err := logger.Sync(); err != nil {
+			fmt.Printf("Error syncing config logger: %v\n", err)
+		}
+	}()
 
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		// Get a new logger for each event to ensure we have the latest configuration

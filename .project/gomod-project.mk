@@ -191,7 +191,7 @@ generate:
 
 fmt:
 	echo "Running Fmt"
-	gofmt -s -l -w ${GOFILES_NOVENDOR}
+	golangci-lint fmt
 
 vet: build
 	echo "Running vet"
@@ -199,11 +199,11 @@ vet: build
 
 lint:
 	echo "Running lint"
-	go list ./... | grep -v /vendor/ | xargs -L1 golint -set_exit_status
+	golangci-lint run
 
 test: fmt vet lint
 	echo "Running test"
-	go test ${BUILD_FLAGS} ${TEST_RACEFLAG} ${PROJ_PACKAGE}/...
+	go test ${BUILD_FLAGS} ${TEST_RACEFLAG} ./...
 
 testshort:
 	echo "Running testshort"

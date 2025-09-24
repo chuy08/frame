@@ -50,12 +50,24 @@ func main() {
 	rootCmd.PersistentFlags().Int("server-port", 0, "Server port")
 
 	// Bind flags to viper
-	viper.BindPFlag("database.host", rootCmd.PersistentFlags().Lookup("db-host"))
-	viper.BindPFlag("database.port", rootCmd.PersistentFlags().Lookup("db-port"))
-	viper.BindPFlag("database.user", rootCmd.PersistentFlags().Lookup("db-user"))
-	viper.BindPFlag("database.password", rootCmd.PersistentFlags().Lookup("db-password"))
-	viper.BindPFlag("database.name", rootCmd.PersistentFlags().Lookup("db-name"))
-	viper.BindPFlag("server.port", rootCmd.PersistentFlags().Lookup("server-port"))
+	bindFlags := []struct {
+		key      string
+		flagName string
+	}{
+		{"database.host", "db-host"},
+		{"database.port", "db-port"},
+		{"database.user", "db-user"},
+		{"database.password", "db-password"},
+		{"database.name", "db-name"},
+		{"server.port", "server-port"},
+	}
+
+	for _, flag := range bindFlags {
+		if err := viper.BindPFlag(flag.key, rootCmd.PersistentFlags().Lookup(flag.flagName)); err != nil {
+			fmt.Printf("Error binding flag %s: %v\n", flag.flagName, err)
+			os.Exit(1)
+		}
+	}
 
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "serve",

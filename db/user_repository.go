@@ -4,22 +4,24 @@ import (
 	"context"
 	"fmt"
 
-	"frame/logging"
 	"frame/models"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
-	"go.uber.org/zap"
 )
+
+// queryer represents a subset of pgxpool.Pool methods needed by UserRepository
+type queryer interface {
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
+}
 
 // UserRepository handles all user-related database operations
 type UserRepository struct {
-	pool *pgxpool.Pool
+	pool queryer
 }
 
 // NewUserRepository creates a new UserRepository instance
-func NewUserRepository(pool *pgxpool.Pool) *UserRepository {
+func NewUserRepository(pool queryer) *UserRepository {
 	return &UserRepository{pool: pool}
 }
 
@@ -54,11 +56,6 @@ func (r *UserRepository) Create(ctx context.Context, firstName, lastName string)
 		return nil, false, err
 	}
 	if existingID != nil {
-		logger := logging.GetLogger()
-		logger.Info("Found existing user",
-			zap.String("id", existingID.String()),
-			zap.String("firstName", firstName),
-			zap.String("lastName", lastName))
 		return &models.User{ID: *existingID}, false, nil
 	}
 
@@ -80,4 +77,27 @@ func (r *UserRepository) Create(ctx context.Context, firstName, lastName string)
 	}
 
 	return user, true, nil
+}
+
+// GetByID retrieves a user by their ID
+// Returns (nil, error) if user not found or there's an error
+func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
+	query := `
+		SELECT id, first_name, last_name, created_at, updated_at
+		FROM users
+		WHERE id = $1
+		LIMIT 1`
+
+	user := &models.User{}
+	err := r.pool.QueryRow(ctx, query, id).
+		Scan(&user.ID, &user.FirstName, &user.LastName, &user.CreatedAt, &user.UpdatedAt)
+
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("user not found: %s", id)
+	}
+	if err != nil {
+		return nil, fmt.Errorf("error getting user by ID: %v", err)
+	}
+
+	return user, nil
 }
