@@ -45,7 +45,13 @@ docker-build: skaffold-build
 	docker build -t framework:dev .
 
 migrate-up:
-	atlas schema apply -u postgres://postgres:postgres@127.0.0.1:15432/framework?sslmode=disable --to file://schema.hcl
+	atlas schema apply -u postgres://postgres:postgres@127.0.0.1:15432/framework?sslmode=require --to file://schema.hcl
+
+migrate-diff:
+	atlas migrate diff --env local
+
+migrate-apply:
+	atlas migrate apply --env local
 
 pg_dump:
 	pg_dump -d framework -h 127.0.0.1 -p 15432 -U postgres -W >> backup.sql

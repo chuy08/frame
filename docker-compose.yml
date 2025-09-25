@@ -28,3 +28,10 @@ services:
       - DATABASE_ENABLE_EXTRA_LOGIN_SECURITY=no
     depends_on:
       - framework-db
+  atlas:
+    image: arigaio/atlas:latest
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    depends_on:
+      - framework-db
