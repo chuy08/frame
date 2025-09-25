@@ -69,6 +69,7 @@ func main() {
 		}
 	}
 
+	// Add serve command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "serve",
 		Short: "Start HTTP API server",
@@ -76,6 +77,18 @@ func main() {
 			if err := server.Start(); err != nil {
 				fmt.Println("Server error:", err)
 			}
+		},
+	})
+
+	// Add version command
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "version",
+		Short: "Print version information",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Printf("Version    : %s\n", Version)
+			fmt.Printf("Git Commit : %s\n", GitCommit)
+			fmt.Printf("Git Branch : %s\n", GitBranch)
+			fmt.Printf("Build Time : %s\n", BuildTime)
 		},
 	})
 

@@ -8,6 +8,13 @@ BINDIR=bin
 # Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
+VERSION=$(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BRANCH=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
+
+# Build flags
+LDFLAGS=-ldflags "-X main.Version=$(VERSION) -X main.GitCommit=$(COMMIT) -X main.GitBranch=$(BRANCH) -X main.BuildTime=$(BUILD_TIME)"
 
 all: tools build
 
@@ -18,7 +25,7 @@ tools:
 	go install golang.org/x/lint/golint@latest
 
 build: config
-	$(GOBUILD) ${BUILD_FLAGS} -o $(BINDIR)/$(BIN) main.go
+	$(GOBUILD) $(LDFLAGS) -o $(BINDIR)/$(BIN)
 
 clean:
 	-rm bin/*
