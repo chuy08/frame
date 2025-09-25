@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
+	"time"
 
 	"frame/config"
 	"frame/hello"
@@ -79,6 +82,17 @@ func main() {
 			}
 		},
 	})
+
+	// Get dynamic version info for development mode
+	if Version == "dev" && GitCommit == "unknown" && GitBranch == "unknown" {
+		if output, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output(); err == nil {
+			GitCommit = strings.TrimSpace(string(output))
+		}
+		if output, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output(); err == nil {
+			GitBranch = strings.TrimSpace(string(output))
+		}
+		BuildTime = time.Now().UTC().Format("2006-01-02_15:04:05")
+	}
 
 	// Add version command
 	rootCmd.AddCommand(&cobra.Command{
