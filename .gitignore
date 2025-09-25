@@ -1,0 +1,34 @@
+# Binaries for the current project
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*_test
+
+# Build outputs
+/bin/
+/pkg/
+
+# Dependency vendor directory (if used)
+/vendor/
+
+# IDE-specific files (examples for common Go IDEs)
+# VS Code
+.vscode/
+# GoLand/IntelliJ IDEA
+.idea/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+# Vim
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log

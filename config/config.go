@@ -112,12 +112,14 @@ func Load() (*Config, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	// Read config file if it exists
-	viper.SetConfigName("config")       // name of config file (without extension)
-	viper.SetConfigType("yaml")         // type of config file
-	viper.AddConfigPath(".")            // look for config in current directory
-	viper.AddConfigPath("$HOME/.frame") // look for config in home directory
-	viper.AddConfigPath("/etc/frame/")  // look for config in /etc/frame/
+	// Only set up default config paths if no config file is already set
+	if viper.ConfigFileUsed() == "" {
+		viper.SetConfigName("config")       // name of config file (without extension)
+		viper.SetConfigType("yaml")         // type of config file
+		viper.AddConfigPath(".")            // look for config in current directory
+		viper.AddConfigPath("$HOME/.frame") // look for config in home directory
+		viper.AddConfigPath("/etc/frame/")  // look for config in /etc/frame/
+	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
