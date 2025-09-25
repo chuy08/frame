@@ -18,8 +18,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=framework
   phppgadmin:
-    build:
-      dockerfile: Dockerfile.phppgadmin.m1
+    image: bitnami/phppgadmin-archived
     ports:
       - 8888:8080
     environment:

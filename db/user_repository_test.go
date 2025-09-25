@@ -15,7 +15,7 @@ import (
 // setupTestDB creates a connection to the test database and cleans up the users table
 func setupTestDB(t *testing.T) *pgxpool.Pool {
 	ctx := context.Background()
-	config, err := pgxpool.ParseConfig("postgres://postgres:postgres@localhost:15432/framework?sslmode=disable")
+	config, err := pgxpool.ParseConfig("postgres://postgres:postgres@localhost:15432/framework?sslmode=require")
 	require.NoError(t, err)
 
 	pool, err := pgxpool.NewWithConfig(ctx, config)
