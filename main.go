@@ -3,14 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"strings"
-	"time"
 
 	"frame/config"
 	"frame/hello"
 	"frame/logging"
 	"frame/server"
+	"frame/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -83,26 +81,15 @@ func main() {
 		},
 	})
 
-	// Get dynamic version info for development mode
-	if Version == "dev" && GitCommit == "unknown" && GitBranch == "unknown" {
-		if output, err := exec.Command("git", "rev-parse", "--short", "HEAD").Output(); err == nil {
-			GitCommit = strings.TrimSpace(string(output))
-		}
-		if output, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output(); err == nil {
-			GitBranch = strings.TrimSpace(string(output))
-		}
-		BuildTime = time.Now().UTC().Format("2006-01-02_15:04:05")
-	}
-
 	// Add version command
 	rootCmd.AddCommand(&cobra.Command{
 		Use:   "version",
 		Short: "Print version information",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("Version    : %s\n", Version)
-			fmt.Printf("Git Commit : %s\n", GitCommit)
-			fmt.Printf("Git Branch : %s\n", GitBranch)
-			fmt.Printf("Build Time : %s\n", BuildTime)
+			fmt.Printf("Version    : %s\n", version.Version)
+			fmt.Printf("Git Commit : %s\n", version.GitCommit)
+			fmt.Printf("Git Branch : %s\n", version.GitBranch)
+			fmt.Printf("Build Time : %s\n", version.BuildTime)
 		},
 	})
 

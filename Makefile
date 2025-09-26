@@ -14,7 +14,7 @@ BRANCH=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
 BUILD_TIME=$(shell date -u '+%Y-%m-%d_%H:%M:%S')
 
 # Build flags
-LDFLAGS=-ldflags "-X main.Version=$(VERSION) -X main.GitCommit=$(COMMIT) -X main.GitBranch=$(BRANCH) -X main.BuildTime=$(BUILD_TIME)"
+LDFLAGS=-ldflags "-X frame/version.Version=$(VERSION) -X frame/version.GitCommit=$(COMMIT) -X frame/version.GitBranch=$(BRANCH) -X frame/version.BuildTime=$(BUILD_TIME)"
 
 all: tools build
 
@@ -22,10 +22,9 @@ tools:
 	go install golang.org/x/tools/cmd/stringer@latest
 	go install golang.org/x/tools/cmd/godoc@latest
 	go install golang.org/x/tools/cmd/guru@latest
-	go install golang.org/x/lint/golint@latest
 
 build: config
-	$(GOBUILD) $(LDFLAGS) -o $(BINDIR)/$(BIN)
+	@$(GOBUILD) $(LDFLAGS) -o $(BINDIR)/$(BIN)
 
 clean:
 	-rm bin/*
