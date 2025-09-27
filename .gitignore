@@ -25,6 +25,7 @@
 # Vim
 *.swp
 *.swo
+__debug_bin*
 
 # Operating System files
 .DS_Store

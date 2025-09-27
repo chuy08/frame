@@ -1,7 +1,6 @@
-version: "2"
 services:
-  framework-db:
-    image: postgres:14.7
+  frame-db:
+    image: postgres:17.6
     command:
       - docker-entrypoint.sh
       - -c
@@ -17,21 +16,10 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=framework
-  phppgadmin:
-    image: bitnami/phppgadmin-archived
-    ports:
-      - 8888:8080
-    environment:
-      - DATABASE_HOST=framework-db
-      - DATABASE_PORT_NUMBER=5432
-      - DATABASE_SSL_MODE=disable
-      - DATABASE_ENABLE_EXTRA_LOGIN_SECURITY=no
-    depends_on:
-      - framework-db
   atlas:
     image: arigaio/atlas:latest
     volumes:
       - ./:/workspace
     working_dir: /workspace
     depends_on:
-      - framework-db
+      - frame-db

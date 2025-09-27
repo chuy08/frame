@@ -5,7 +5,7 @@ env "local" {
 
     url = "postgres://postgres:postgres@127.0.0.1:15432/framework?sslmode=require"
 
-    dev = "docker://postgres/14/dev?search_path=public"
+    dev = "docker://postgres/17/dev?search_path=public"
 
     format {
         migrate {
